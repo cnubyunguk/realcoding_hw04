@@ -31,7 +31,7 @@ public class DogController {
 
     @GetMapping("/dogs/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public Dog getDogByName(@RequestParam(value="name") String name)
+    public Dog getDogByName(@PathVariable String name)
     {
         return dogManagementService.getDogByName(name);
     }
