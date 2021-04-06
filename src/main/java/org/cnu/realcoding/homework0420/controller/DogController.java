@@ -41,4 +41,12 @@ public class DogController {
     public void updateDog(@PathVariable String name, @RequestBody Dog body){
         dogManagementService.updateDog(name, body);
     }
+
+    // 강아지 진료기록 추가 API
+    @PostMapping("/dogs/{name}/medicalRecords")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateMedicalRecords(@PathVariable String name, @RequestBody String medicalRecord){
+        dogManagementService.addMedicalRecord(name,medicalRecord);
+    }
+
 }

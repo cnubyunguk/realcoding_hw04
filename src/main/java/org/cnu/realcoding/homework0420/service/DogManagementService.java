@@ -3,6 +3,7 @@ package org.cnu.realcoding.homework0420.service;
 import org.cnu.realcoding.homework0420.domain.Dog;
 import org.cnu.realcoding.homework0420.exception.DogNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -48,4 +49,15 @@ public class DogManagementService {
 
         mongoTemplate.updateFirst(query, update, Dog.class);
     }
+
+
+    public void addMedicalRecord(String name, String record) {
+        if (getDogByName(name) == null)
+            throw new DogNotFoundException();
+
+        Query query = new Query().addCriteria(Criteria.where("name").is(name));
+        Update update = new Update().addToSet("medicalRecords",record);
+        mongoTemplate.findAndModify(query,update, FindAndModifyOptions.options().upsert(true),Dog.class);
+    }
+
 }
