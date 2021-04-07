@@ -60,4 +60,16 @@ public class DogManagementService {
         mongoTemplate.findAndModify(query,update, FindAndModifyOptions.options().upsert(true),Dog.class);
     }
 
+    public void updateKind(String name,String kind) {
+
+        if (getDogByName(name) == null)
+            throw new DogNotFoundException();
+
+        Query query = new Query().addCriteria(Criteria.where("name").is(name));
+        Update update = new Update().
+
+                set("kind", kind);
+
+        mongoTemplate.updateFirst(query, update, Dog.class);
+    }
 }
