@@ -60,4 +60,13 @@ public class DogManagementService {
         mongoTemplate.findAndModify(query,update, FindAndModifyOptions.options().upsert(true),Dog.class);
     }
 
+    public Dog getDogByOwnerName(String ownerName) {
+        Query query = new Query().addCriteria(Criteria.where("ownerName").is(ownerName));
+        return mongoTemplate.findOne(query, Dog.class);
+    }
+
+    public Dog getDogByOwnerPhoneNumber(String ownerPhoneNumber) {
+        Query query = new Query().addCriteria(Criteria.where("ownerPhoneNumber").is(ownerPhoneNumber));
+        return mongoTemplate.findOne(query, Dog.class);
+    }
 }
