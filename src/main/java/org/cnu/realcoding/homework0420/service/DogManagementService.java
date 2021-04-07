@@ -1,6 +1,7 @@
 package org.cnu.realcoding.homework0420.service;
 
 import org.cnu.realcoding.homework0420.domain.Dog;
+import org.cnu.realcoding.homework0420.exception.DogDuplicateException;
 import org.cnu.realcoding.homework0420.exception.DogNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -18,7 +19,7 @@ public class DogManagementService {
 
     public Dog insertDog(Dog body){
         if (getDog(body.getName(), body.getOwnerName(), body.getOwnerPhoneNumber()) != null)
-            throw new DogNotFoundException();
+            throw new DogDuplicateException();
 
         return mongoTemplate.insert(body);
     }
