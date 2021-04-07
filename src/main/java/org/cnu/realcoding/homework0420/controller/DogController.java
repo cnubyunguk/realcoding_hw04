@@ -36,6 +36,22 @@ public class DogController {
         return dogManagementService.getDogByName(name);
     }
 
+
+    @GetMapping("/dogs/ownerName/{ownerName}")
+    @ResponseStatus(HttpStatus.OK)
+    public Dog getDogByOwnerName(@PathVariable String ownerName)
+    {
+        return dogManagementService.getDogByOwnerName(ownerName);
+    }
+
+    @GetMapping("/dogs/ownerPhoneNumber/{phoneNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public Dog getDogByOwnerPhoneNumber(@PathVariable("phoneNumber") String ownerPhoneNumber)
+    {
+        return dogManagementService.getDogByOwnerPhoneNumber(ownerPhoneNumber);
+    }
+
+
     @PutMapping("/dogs/{name}")
     @ResponseStatus(HttpStatus.OK)
     public void updateDog(@PathVariable String name, @RequestBody Dog body){

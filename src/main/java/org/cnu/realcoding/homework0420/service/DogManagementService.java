@@ -59,17 +59,33 @@ public class DogManagementService {
         Update update = new Update().addToSet("medicalRecords",record);
         mongoTemplate.findAndModify(query,update, FindAndModifyOptions.options().upsert(true),Dog.class);
     }
-
-    public void updateKind(String name,String kind) {
-
-        if (getDogByName(name) == null)
+  
+    public Dog getDogByOwnerName(String ownerName) {
+        Query query = new Query().addCriteria(Criteria.where("ownerName").is(ownerName));
+        if (!mongoTemplate.exists(query, Dog.class))
             throw new DogNotFoundException();
 
-        Query query = new Query().addCriteria(Criteria.where("name").is(name));
-        Update update = new Update().
+        return mongoTemplate.findOne(query, Dog.class);
+    }
 
-                set("kind", kind);
+    public Dog getDogByOwnerPhoneNumber(String ownerPhoneNumber) {
+        Query query = new Query().addCriteria(Criteria.where("ownerPhoneNumber").is(ownerPhoneNumber));
+        if (!mongoTemplate.exists(query, Dog.class))
+            throw new DogNotFoundException();
 
-        mongoTemplate.updateFirst(query, update, Dog.class);
+        return mongoTemplate.findOne(query, Dog.class);
+    }
+  
+    public void updateKind(String name,String kind) {
+
+      if (getDogByName(name) == null)
+          throw new DogNotFoundException();
+
+      Query query = new Query().addCriteria(Criteria.where("name").is(name));
+      Update update = new Update().
+
+              set("kind", kind);
+
+      mongoTemplate.updateFirst(query, update, Dog.class);
     }
 }
