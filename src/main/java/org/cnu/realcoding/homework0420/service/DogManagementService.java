@@ -32,14 +32,14 @@ public class DogManagementService {
     }
 
     public Dog getDogByName(String name){
+        if (!hasDogName(name)) throw new DogNotFoundException();
+
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         return mongoTemplate.findOne(query, Dog.class);
     }
 
     public void updateDog(String name, Dog body) {
-        // TODO: 데이터베이스에 두번 접근하지 않는 다른 방법이 있을지?..
-        if (getDogByName(name) == null)
-            throw new DogNotFoundException();
+        if (!hasDogName(name)) throw new DogNotFoundException();
 
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         Update update = new Update().
@@ -53,8 +53,7 @@ public class DogManagementService {
 
 
     public void addMedicalRecord(String name, String record) {
-        if (getDogByName(name) == null)
-            throw new DogNotFoundException();
+        if (!hasDogName(name)) throw new DogNotFoundException();
 
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         Update update = new Update().addToSet("medicalRecords",record);
@@ -78,9 +77,7 @@ public class DogManagementService {
     }
   
     public void updateKind(String name,String kind) {
-
-      if (getDogByName(name) == null)
-          throw new DogNotFoundException();
+        if (!hasDogName(name)) throw new DogNotFoundException();
 
       Query query = new Query().addCriteria(Criteria.where("name").is(name));
       Update update = new Update().
@@ -88,5 +85,10 @@ public class DogManagementService {
               set("kind", kind);
 
       mongoTemplate.updateFirst(query, update, Dog.class);
+    }
+
+    private boolean hasDogName(String name){
+        Query query = new Query().addCriteria(Criteria.where("name").is(name));
+        return mongoTemplate.exists(query, Dog.class);
     }
 }
