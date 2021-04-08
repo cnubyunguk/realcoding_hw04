@@ -3,6 +3,6 @@ package org.cnu.realcoding.homework0420.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+@ResponseStatus(value = HttpStatus.CONFLICT, reason = "Already have the given fields name, ownerName, ownerPhoneNumber.")
 public class DogDuplicateException extends RuntimeException{
 }

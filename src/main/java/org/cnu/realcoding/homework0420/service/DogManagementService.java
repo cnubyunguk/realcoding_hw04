@@ -1,6 +1,7 @@
 package org.cnu.realcoding.homework0420.service;
 
 import org.cnu.realcoding.homework0420.domain.Dog;
+import org.cnu.realcoding.homework0420.exception.AttemptToChangeMedicalRecord;
 import org.cnu.realcoding.homework0420.exception.DogDuplicateException;
 import org.cnu.realcoding.homework0420.exception.DogNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,16 @@ public class DogManagementService {
     private MongoTemplate mongoTemplate;
 
     public Dog insertDog(Dog body){
-        if (getDog(body.getName(), body.getOwnerName(), body.getOwnerPhoneNumber()) != null)
+        if (hasDogName(body.getName()) && hasOwnerName(body.getOwnerName()) && hasOwnerPhoneNumber(body.getOwnerPhoneNumber()))
             throw new DogDuplicateException();
 
         return mongoTemplate.insert(body);
     }
 
     public Dog getDog(String name, String ownerName, String ownerPhoneNumber){
+        if (!hasDogName(name) || !hasOwnerName(ownerName) || !hasOwnerPhoneNumber(ownerPhoneNumber))
+            throw new DogNotFoundException();
+
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         query.addCriteria(Criteria.where("ownerName").is(ownerName));
         query.addCriteria(Criteria.where("ownerPhoneNumber").is(ownerPhoneNumber));
@@ -40,6 +44,10 @@ public class DogManagementService {
 
     public void updateDog(String name, Dog body) {
         if (!hasDogName(name)) throw new DogNotFoundException();
+
+        var requestedRecords = body.getMedicalRecords();
+        if (requestedRecords != null && !requestedRecords.isEmpty())
+            throw new AttemptToChangeMedicalRecord();
 
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         Update update = new Update().
@@ -89,6 +97,16 @@ public class DogManagementService {
 
     private boolean hasDogName(String name){
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
+        return mongoTemplate.exists(query, Dog.class);
+    }
+
+    private boolean hasOwnerName(String ownerName){
+        Query query = new Query().addCriteria(Criteria.where("ownerName").is(ownerName));
+        return mongoTemplate.exists(query, Dog.class);
+    }
+
+    private boolean hasOwnerPhoneNumber(String number){
+        Query query = new Query().addCriteria(Criteria.where("ownerPhoneNumber").is(number));
         return mongoTemplate.exists(query, Dog.class);
     }
 }
