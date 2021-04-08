@@ -18,7 +18,7 @@ public class DogManagementService {
     private MongoTemplate mongoTemplate;
 
     public Dog insertDog(Dog body){
-        if (getDog(body.getName(), body.getOwnerName(), body.getOwnerPhoneNumber()) != null)
+        if (hasDogName(body.getName()) && hasOwnerName(body.getOwnerName()) && hasOwnerPhoneNumber(body.getOwnerPhoneNumber()))
             throw new DogDuplicateException();
 
         return mongoTemplate.insert(body);
