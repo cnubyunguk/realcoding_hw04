@@ -29,7 +29,7 @@ public class DogController {
         return dogManagementService.getDog(name, ownerName, ownerPhoneNumber);
     }
 
-    @GetMapping("/dogs/{name}")
+    @GetMapping("/dogs/names/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Dog getDogByName(@PathVariable String name)
     {
