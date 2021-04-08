@@ -25,6 +25,9 @@ public class DogManagementService {
     }
 
     public Dog getDog(String name, String ownerName, String ownerPhoneNumber){
+        if (!hasDogName(name) || !hasOwnerName(ownerName) || !hasOwnerPhoneNumber(ownerPhoneNumber))
+            throw new DogNotFoundException();
+
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         query.addCriteria(Criteria.where("ownerName").is(ownerName));
         query.addCriteria(Criteria.where("ownerPhoneNumber").is(ownerPhoneNumber));
@@ -89,6 +92,16 @@ public class DogManagementService {
 
     private boolean hasDogName(String name){
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
+        return mongoTemplate.exists(query, Dog.class);
+    }
+
+    private boolean hasOwnerName(String ownerName){
+        Query query = new Query().addCriteria(Criteria.where("ownerName").is(ownerName));
+        return mongoTemplate.exists(query, Dog.class);
+    }
+
+    private boolean hasOwnerPhoneNumber(String number){
+        Query query = new Query().addCriteria(Criteria.where("ownerPhoneNumber").is(number));
         return mongoTemplate.exists(query, Dog.class);
     }
 }
