@@ -1,6 +1,7 @@
 package org.cnu.realcoding.homework0420.service;
 
 import org.cnu.realcoding.homework0420.domain.Dog;
+import org.cnu.realcoding.homework0420.exception.AttemptToChangeMedicalRecord;
 import org.cnu.realcoding.homework0420.exception.DogDuplicateException;
 import org.cnu.realcoding.homework0420.exception.DogNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,10 @@ public class DogManagementService {
 
     public void updateDog(String name, Dog body) {
         if (!hasDogName(name)) throw new DogNotFoundException();
+
+        var requestedRecords = body.getMedicalRecords();
+        if (requestedRecords != null && !requestedRecords.isEmpty())
+            throw new AttemptToChangeMedicalRecord();
 
         Query query = new Query().addCriteria(Criteria.where("name").is(name));
         Update update = new Update().
